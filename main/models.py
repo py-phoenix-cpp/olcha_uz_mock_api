@@ -13,9 +13,8 @@ class Banner(models.Model):
     img = models.ImageField(upload_to='img/Banner/')
 
 
-class SubCategory(models.Model):
+class MainCategory(models.Model):
     name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='img/SubCategory/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -24,18 +23,25 @@ class SubCategory(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=255)
     img = models.ImageField(upload_to='img/Category/', null=True, blank=True)
-    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, blank=True, null=True)
+    main_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name
 
 
-class MainCategory(models.Model):
+class SubCategory(models.Model):
     name = models.CharField(max_length=255)
+    img = models.ImageField(upload_to='img/SubCategory/', null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name
+
+
+
+
+
+
 
 
 class Brend(models.Model):
@@ -47,15 +53,9 @@ class Brend(models.Model):
 class ProductColorModelImage(models.Model):
     img = models.ImageField(upload_to='img/Products/ProductColorImage/')
 
-    def __str__(self):
-        return self.img.name
-
 
 class ProductViewImage(models.Model):
     img = models.ImageField(upload_to='img/Products/ProductViewImage/')
-
-    def __str__(self):
-        return self.img.name
 
 
 class Product(models.Model):
@@ -75,8 +75,8 @@ class Product(models.Model):
     price = models.IntegerField()
     installment_plan_price = models.IntegerField()
     main_img = models.ImageField(upload_to=f'img/Products/')
-    view_img = models.ManyToManyField(ProductViewImage, null=True, blank=True)
-    color_img = models.ManyToManyField(ProductColorModelImage)
+    view_img = models.ManyToManyField(ProductViewImage, blank=True)
+    color_img = models.ManyToManyField(ProductColorModelImage, blank=True)
     brend = models.ForeignKey(Brend, on_delete=models.CASCADE)
 
 
