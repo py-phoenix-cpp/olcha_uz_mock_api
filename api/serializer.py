@@ -20,21 +20,15 @@ class SubCategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
-
-
 class MainCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = MainCategory
         fields = "__all__"
 
 
-class BrendSerializer(serializers.ModelSerializer):
+class BrandSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Brend
+        model = Brand
         fields = "__all__"
 
 
@@ -53,6 +47,7 @@ class ProductViewImageSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
+        depth = 2
         fields = "__all__"
 
 

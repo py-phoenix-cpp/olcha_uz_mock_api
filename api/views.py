@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .serializer import *
 
 
@@ -8,60 +9,73 @@ class InfoView(viewsets.ReadOnlyModelViewSet):
     serializer_class = InfoSerializer
 
 
-class BannerView(viewsets.ModelViewSet):
+class BannerView(viewsets.ReadOnlyModelViewSet):
     queryset = Banner.objects.all().order_by('-id')
     serializer_class = BannerSerializer
-    http_method_names = ['get', 'post']
 
+    def create(self, request):
+        img = request.FILES['img']
+        Banner.objects.create(img=img)
+        return Response({'done'})
 
-class SubCategoryView(viewsets.ModelViewSet):
+class SubCategoryView(viewsets.ReadOnlyModelViewSet):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
-    http_method_names = ['get', 'post', 'patch', 'delete']
 
-class CategoryView(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    http_method_names = ['get', 'post', 'patch', 'delete']
 
-class MainCategoryView(viewsets.ModelViewSet):
+class MainCategoryView(viewsets.ReadOnlyModelViewSet):
     queryset = MainCategory.objects.all()
     serializer_class = MainCategorySerializer
-    http_method_names = ['get', 'post', 'delete']
 
-class BrendView(viewsets.ModelViewSet):
-    queryset = Brend.objects.all()
-    serializer_class = BrendSerializer
-    http_method_names = ['get', 'post']
 
-class ProductColorModelImageView(viewsets.ModelViewSet):
+class BrandView(viewsets.ReadOnlyModelViewSet):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+
+
+class ProductColorModelImageView(viewsets.ReadOnlyModelViewSet):
     queryset = ProductColorModelImage.objects.all()
     serializer_class = ProductSerializer
-    http_method_names = ['get', 'post']
 
-class ProductViewImageView(viewsets.ModelViewSet):
+
+class ProductViewImageView(viewsets.ReadOnlyModelViewSet):
     queryset = ProductViewImage.objects.all().order_by('-id')
     serializer_class = ProductViewImageSerializer
-    http_method_names = ['get', 'post']
 
-class ProductView(viewsets.ModelViewSet):
+
+class ProductView(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    http_method_names = ['get', 'post', 'patch', 'delete']
 
-class NewsView(viewsets.ModelViewSet):
+    def destroy(self, requests, pk=None):
+        query = Product.objects.get(id=pk)
+        query.delete()
+        return Response({'destroyed'})
+
+    @action(methods=['get'], detail=False)
+    def filter_by_category(self, request, pk=None):
+        query = Product.objects.filter(id=pk)
+        return Response(self.serializer_class(query, many=True).data)
+
+
+class NewsView(viewsets.ReadOnlyModelViewSet):
     queryset = News.objects.all().order_by('-id')
     serializer_class = NewsSerializer
-    http_method_names = ['get', 'post', 'delete']
 
-    # def create(self, request, *args, **kwargs):
-    #     title = request.POST.get('title')
-    #     text = request.POST.get('text')
-    #     date = request.POST.get('date')
-    #     News.objects.create(title=title, text=text, date=date)
-    #     return Response({'message': 'done'})
+    def create(self, request):
+        title = request.POST['title']
+        text = request.POST['text']
+        date = request.POST['date']
+        News.objects.create(title=title, text=text, date=date)
+        return Response({'message': 'done'})
 
-class OpinionView(viewsets.ModelViewSet):
+    def destroy(self, requests, pk=None):
+        query = News.objects.get(id=pk)
+        query.delete()
+        return Response({'destroyed'})
+
+
+class OpinionView(viewsets.ReadOnlyModelViewSet):
     queryset = Opinion.objects.all()
     serializer_class = OpinionSerializer
     http_method_names = ['get', 'post']

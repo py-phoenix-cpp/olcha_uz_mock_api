@@ -15,12 +15,13 @@ class Banner(models.Model):
 
 class MainCategory(models.Model):
     name = models.CharField(max_length=255)
+    img = models.ImageField(upload_to='img/MainCategory/')
 
     def __str__(self):
         return self.name
 
 
-class Category(models.Model):
+class SubCategory(models.Model):
     name = models.CharField(max_length=255)
     img = models.ImageField(upload_to='img/Category/', null=True, blank=True)
     main_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, blank=True, null=True)
@@ -29,33 +30,26 @@ class Category(models.Model):
         return self.name
 
 
-class SubCategory(models.Model):
+class Brand(models.Model):
     name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='img/SubCategory/', null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+    img = models.ImageField(upload_to='img/Brand/')
 
     def __str__(self):
         return self.name
 
 
-
-
-
-
-
-
-class Brend(models.Model):
-    name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='img/Brend/')
-    # category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
-
-
 class ProductColorModelImage(models.Model):
     img = models.ImageField(upload_to='img/Products/ProductColorImage/')
+
+    def __str__(self):
+        return self.img.name
 
 
 class ProductViewImage(models.Model):
     img = models.ImageField(upload_to='img/Products/ProductViewImage/')
+
+    def __str__(self):
+        return self.img.name
 
 
 class Product(models.Model):
@@ -77,7 +71,7 @@ class Product(models.Model):
     main_img = models.ImageField(upload_to=f'img/Products/')
     view_img = models.ManyToManyField(ProductViewImage, blank=True)
     color_img = models.ManyToManyField(ProductColorModelImage, blank=True)
-    brend = models.ForeignKey(Brend, on_delete=models.CASCADE)
+    brend = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
 
 class News(models.Model):
